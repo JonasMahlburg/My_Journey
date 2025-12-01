@@ -6,16 +6,21 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+    @Environment(\.modelContext) var modelContext
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack{
+            DetailView()
+                .navigationTitle("")
+                .toolbar{
+                    Button("Add Samples", systemImage: "plus"){
+                        try? modelContext.delete(model: Journey.self)
+                    }
+                }
         }
-        .padding()
     }
 }
 
