@@ -56,17 +56,17 @@ struct DetailView: View {
                 // Add map content here if needed, e.g., UserAnnotation(), Marker, etc.
             }
             .frame(width: 300, height: 200)
-            Section("Infos"){
-                List {
-                    ForEach(journey.infos ?? [] , id: \.self) { info in
-                        Text(info)
-                    }
-                }
-            }
 
         }
         .navigationTitle("Reise")
             .font(.title)
+        Section("Infos"){
+            List {
+                ForEach(journey.infos ?? [], id: \.self) { info in
+                    Text(info)
+                }
+            }
+        }
     }
 }
 

@@ -36,7 +36,7 @@ struct ContentView: View {
                     }
                 }
                 .sheet(isPresented: $showingAddScreen) {
-                    NewJourneyView()
+//                    NewJourneyView()
                 }
         }
         .frame(width: .infinity, height: .infinity)
