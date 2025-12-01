@@ -1,5 +1,5 @@
 //
-//  Journys.swift
+//  Journeys.swift
 //  My_Journy
 //
 //  Created by Jonas Mahlburg on 01.12.25.

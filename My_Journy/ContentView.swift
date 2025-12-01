@@ -11,16 +11,36 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     
+    @State private var showingAddScreen = false
+    
+    var journeys = [Journey]()
+
+    
     var body: some View {
         NavigationStack{
-            DetailView()
-                .navigationTitle("")
+            List{
+                ForEach (journeys) { journey in
+                    NavigationLink( value: journey){
+                        HStack{
+                            Image(systemName: "car")
+                            Text("From: \(journey.start) -> to: \(journey.destination)")
+                        }
+                    }
+                    
+                }
+            }
+                .navigationTitle("Meine Reisen")
                 .toolbar{
                     Button("Add Samples", systemImage: "plus"){
-                        try? modelContext.delete(model: Journey.self)
+                        showingAddScreen = true
                     }
                 }
+                .sheet(isPresented: $showingAddScreen) {
+                    NewJourneyView()
+                }
         }
+        .frame(width: .infinity, height: .infinity)
+        .background(.leatherBrown)
     }
 }
 
