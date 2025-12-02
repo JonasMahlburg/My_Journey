@@ -21,7 +21,25 @@ enum VehicleType: String, Identifiable, CaseIterable {
     var displayName: String {
         self.rawValue
     }
+    var iconName: String {
+            switch self {
+            case .car:
+                return "car.fill"
+            case .train:
+                return "train.side.front.car"
+            case .plane:
+                return "airplane"
+            case .ship:
+                return "ferry.fill"
+            case .bicycle:
+                return "bicycle"
+            case .walk:
+                return "figure.walk"
+            }
+        }
 }
+
+
 
 @Model
 class Journey {
@@ -31,8 +49,9 @@ class Journey {
     var startDate: Date
     var vehicle: String
     var infos: [String]?
+    var packlist: [String]?
     
-    init(destination: String, stops: [String]? = nil, startDate: Date, vehicle: String, infos: [String]? = nil, start: String) {
+    init(destination: String, stops: [String]? = nil, startDate: Date, vehicle: String, infos: [String]? = nil, start: String, packlist: [String]? = nil) {
         self.destination = destination
         self.stops = stops
         self.startDate = startDate

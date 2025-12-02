@@ -43,28 +43,24 @@ struct NewJourneyView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Speichern") {
-                        saveJourney() // Neue Funktion zum Speichern aufrufen
+                        saveJourney()
                     }
-                    // Speichern-Button nur aktivieren, wenn Start und Ziel eingegeben wurden
                     .disabled(start.isEmpty || destination.isEmpty)
                 }
                 
-                // NavigationLink am unteren Rand, falls benötigt (platziere ihn hier oder im Form)
                 ToolbarItem(placement: .bottomBar) {
                     NavigationLink {
-                        // PackingList() // Sicherstellen, dass PackingList existiert und importiert ist
                         Text("Packliste-View")
                     } label: {
                         Label("Packliste", systemImage: "checklist")
                     }
+                    EditButton()
                 }
             }
         }
     }
     
-    // Funktion zum Speichern der neuen Journey
     func saveJourney() {
-        // 1. Neue Journey Instanz erstellen
         let newJourney = Journey(
             destination: destination,
             stops: nil,
@@ -73,11 +69,8 @@ struct NewJourneyView: View {
             infos: nil,
             start: start  // Standardwert
         )
-        
-        // 2. Im ModelContext speichern
         modelContext.insert(newJourney)
         
-        // 3. View schließen
         dismiss()
     }
 }
