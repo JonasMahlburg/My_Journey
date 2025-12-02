@@ -20,6 +20,7 @@ struct DetailView: View {
         )
     )
     
+    
     private var vehicleSymbolName: String {
         switch journey.vehicle.lowercased() {
         case "plane", "flugzeug":
