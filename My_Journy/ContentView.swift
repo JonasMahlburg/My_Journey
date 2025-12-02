@@ -36,10 +36,10 @@ struct ContentView: View {
                     }
                 }
                 .sheet(isPresented: $showingAddScreen) {
-//                    NewJourneyView()
+                    NewJourneyView()
                 }
         }
-        .frame(width: .infinity, height: .infinity)
+        .frame(width: 300, height: 300)
         .background(.leatherBrown)
     }
 }

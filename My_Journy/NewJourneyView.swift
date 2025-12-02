@@ -1,70 +1,83 @@
 //
-//  NewJourneyView.swift
-//  My_Journy
+// NewJourneyView.swift
+// My_Journy
 //
-//  Created by Jonas Mahlburg on 01.12.25.
+// Created by Jonas Mahlburg on 01.12.25.
 //
 
 import SwiftUI
 import SwiftData
 
 struct NewJourneyView: View {
-    @Bindable var journey: Journey
+    @Environment(\.modelContext) var modelContext
+    @Environment(\.dismiss) var dismiss
     
-    @State private var selectedVehicle: VehicleType = {
-        if let type = VehicleType(rawValue: "car") {
-            return type
-        }
-        return .car
-    }()
+    @State private var start = ""
+    @State private var destination = ""
+    @State private var startDate = Date()
+    @State private var selectedVehicle = VehicleType.car
     
     var body: some View {
-        Form{
-            Section("Travel Plan"){
-                TextField("Start", text: $journey.start)
-                TextField("Destination", text: $journey.destination)
-                DatePicker("Start of Journey", selection: $journey.startDate)
-                Picker("Vehicle", selection: $selectedVehicle){
-                    ForEach(VehicleType.allCases){ type in
-                        Text(type.displayName)
-                            .tag(type)
+        NavigationStack {
+            Form{
+                Section("Travel Plan"){
+                    TextField("Start", text: $start)
+                    TextField("Destination", text: $destination)
+                    
+                    DatePicker("Start of Journey", selection: $startDate)
+                    
+                    Picker("Vehicle", selection: $selectedVehicle){
+                        ForEach(VehicleType.allCases){ type in
+                            Text(type.displayName)
+                                .tag(type)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                }
+            }
+            .navigationTitle("Neue Reise hinzufügen")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Abbrechen") { dismiss() }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Speichern") {
+                        saveJourney() // Neue Funktion zum Speichern aufrufen
+                    }
+                    // Speichern-Button nur aktivieren, wenn Start und Ziel eingegeben wurden
+                    .disabled(start.isEmpty || destination.isEmpty)
+                }
+                
+                // NavigationLink am unteren Rand, falls benötigt (platziere ihn hier oder im Form)
+                ToolbarItem(placement: .bottomBar) {
+                    NavigationLink {
+                        // PackingList() // Sicherstellen, dass PackingList existiert und importiert ist
+                        Text("Packliste-View")
+                    } label: {
+                        Label("Packliste", systemImage: "checklist")
                     }
                 }
-                .pickerStyle(.menu)
-            }
-        }
-        .onChange(of: selectedVehicle){ oldValue, newValue in journey.vehicle = newValue.rawValue
-        }
-        .onAppear {
-            if let existingType = journey.vehicleType {
-                selectedVehicle = existingType
             }
         }
     }
-}
-
-#Preview {
-    do {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Journey.self, configurations: config)
-        var components = DateComponents()
-        components.year = 2025
-        components.month = 11
-        components.day = 30
-        let startDate = Calendar.current.date(from: components) ?? Date()
-        
-        let journey = Journey(
-            destination: "London",
+    
+    // Funktion zum Speichern der neuen Journey
+    func saveJourney() {
+        // 1. Neue Journey Instanz erstellen
+        let newJourney = Journey(
+            destination: destination,
             stops: nil,
             startDate: startDate,
-            vehicle: VehicleType.train.rawValue,
-            infos: ["Window seat", "Bring snacks"],
-            start: "Hamburg"
+            vehicle: selectedVehicle.rawValue,
+            infos: nil,
+            start: start  // Standardwert
         )
         
-        return NewJourneyView(journey: journey)
-            .modelContainer(container)
-    } catch {
-        return Text("Failed to create container: \(error.localizedDescription)")
+        // 2. Im ModelContext speichern
+        modelContext.insert(newJourney)
+        
+        // 3. View schließen
+        dismiss()
     }
 }
