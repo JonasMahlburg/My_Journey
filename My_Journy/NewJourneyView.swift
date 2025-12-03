@@ -54,7 +54,6 @@ struct NewJourneyView: View {
                     } label: {
                         Label("Packliste", systemImage: "checklist")
                     }
-                    EditButton()
                 }
             }
         }

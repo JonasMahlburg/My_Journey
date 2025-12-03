@@ -33,6 +33,7 @@ struct ContentView: View {
                         }
                     }
                 }
+                .onDelete(perform: deleteItems)
             }
                 .navigationTitle("Meine Reisen")
                 .toolbar{
@@ -44,23 +45,15 @@ struct ContentView: View {
                     NewJourneyView()
                 }
                 .navigationDestination(for: Journey.self) { journey in
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("\(journey.start) → \(journey.destination)")
-                            .font(.title2)
-                            .bold()
-                        Text(journey.startDate, style: .date)
-                            .font(.headline)
-                            .foregroundStyle(.secondary)
-                        if let vehicle = journey.vehicleType?.iconName {
-                            Label("Fahrzeug", systemImage: vehicle)
-                        }
-                        Spacer()
-                    }
-                    .padding()
-                    .navigationTitle("Reise")
+                    DetailView(journey: journey)
                 }
         }
-
+        .background(Color(.leatherBrown))
+    }
+    func deleteItems(offsets: IndexSet) {
+        for index in offsets {
+            modelContext.delete(journeys[index])
+        }
     }
 }
 
