@@ -18,6 +18,7 @@ struct DetailView: View {
     @Environment(\.modelContext) var modelContext
     
     @State private var isShowingAddInfoSheet = false
+    @State private var isShowingPackingSheet = false
     
     @State private var startCoordinate: CLLocationCoordinate2D?
     @State private var destinationCoordinate: CLLocationCoordinate2D?
@@ -109,7 +110,6 @@ struct DetailView: View {
                 camera = cameraFittingRoute()
             }
             
-            // Infos Sektion (mit Möglichkeit zum Bearbeiten/Hinzufügen)
             Section("Infos"){
                 List {
                     ForEach(journey.infos ?? [], id: \.self) { info in
@@ -129,23 +129,33 @@ struct DetailView: View {
                     Button {
                         isShowingAddInfoSheet = true
                     } label: {
-                        Label("Info hinzufügen", systemImage: "plus.circle.fill")
+                        Label("Info hinzufügen", systemImage: "plus")
                     }
-                    // Button zum Umschalten des List-Bearbeitungsmodus
-                    EditButton()
                 }
             }
         }
-        // Sheet für die neue Info
+        .toolbar{
+            ToolbarItem(placement: .bottomBar){
+                HStack{
+                    Button{
+                        isShowingPackingSheet = true
+                    } label:{
+                        Label("Packliste", systemImage: "list.bullet")
+                    }
+                }
+            }
+        }
         .sheet(isPresented: $isShowingAddInfoSheet) {
             AddInfoView(journey: journey)
+        }
+        .sheet(isPresented: $isShowingPackingSheet){
+            PackingList(journey: journey)
         }
     }
     
     // MARK: - Datenbearbeitung & Geocoding
     
     func deleteInfo(offsets: IndexSet) {
-        // Sicherstellen, dass das Array existiert, bevor gelöscht wird
         guard var currentInfos = journey.infos else { return }
         currentInfos.remove(atOffsets: offsets)
         journey.infos = currentInfos // Speichere die geänderte Liste
@@ -164,7 +174,6 @@ struct DetailView: View {
         }
     }
     
-    // 2. KORREKTUR: Verwende MKGeoCoder für das Geocoding
     private func geocodeAddressString(_ string: String) async -> CLLocationCoordinate2D? {
         await withCheckedContinuation { continuation in
             let geocoder = CLGeocoder()
@@ -179,13 +188,8 @@ struct DetailView: View {
     }
 }
     
-    // MARK: - Preview
-    
     #Preview("DetailView Sample") {
-        // 3. KORREKTUR: ModelContainer für das Preview erstellen
         do {
-            
-            
             let config = ModelConfiguration(for: Journey.self, isStoredInMemoryOnly: true)
             let container = try ModelContainer(for: Journey.self, configurations: config)
             
