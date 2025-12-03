@@ -140,7 +140,7 @@ struct DetailView: View {
                     Button{
                         isShowingPackingSheet = true
                     } label:{
-                        Label("Packliste", systemImage: "list.bullet")
+                        Label("Packliste", systemImage: "checklist")
                     }
                 }
             }
