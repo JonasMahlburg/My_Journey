@@ -58,6 +58,7 @@ class Journey {
         self.vehicle = vehicle
         self.infos = infos
         self.start = start
+        self.packlist = packlist
     }
     var vehicleType: VehicleType? {
         VehicleType(rawValue: vehicle)

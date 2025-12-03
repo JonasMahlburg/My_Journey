@@ -11,22 +11,29 @@ import SwiftData
 struct NewJourneyView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
-    
-    @State private var start = ""
-    @State private var destination = ""
-    @State private var startDate = Date()
-    @State private var selectedVehicle = VehicleType.car
+
+    @State private var newJourney = Journey(
+        destination: "",
+        startDate: Date(),
+        vehicle: VehicleType.car.rawValue,
+        start: ""
+    )
     
     var body: some View {
         NavigationStack {
             Form{
                 Section("Travel Plan"){
-                    TextField("Start", text: $start)
-                    TextField("Destination", text: $destination)
+                    // Bindung der Textfelder direkt an das newJourney Objekt
+                    TextField("Start", text: $newJourney.start)
+                    TextField("Destination", text: $newJourney.destination)
                     
-                    DatePicker("Start of Journey", selection: $startDate)
+                    DatePicker("Start of Journey", selection: $newJourney.startDate)
                     
-                    Picker("Vehicle", selection: $selectedVehicle){
+                    // Korrektes Binding für den Picker:
+                    Picker("Vehicle", selection: Binding(
+                        get: { newJourney.vehicleType ?? VehicleType.car },
+                        set: { newJourney.vehicle = $0.rawValue }
+                    )) {
                         ForEach(VehicleType.allCases){ type in
                             Text(type.displayName)
                                 .tag(type)
@@ -43,14 +50,18 @@ struct NewJourneyView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Speichern") {
+                        // Der Zugriff auf newJourney ist hier nun direkt möglich
                         saveJourney()
                     }
-                    .disabled(start.isEmpty || destination.isEmpty)
+                    // Prüfe auf Start und Destination in der newJourney
+                    .disabled(newJourney.start.isEmpty || newJourney.destination.isEmpty)
                 }
                 
                 ToolbarItem(placement: .bottomBar) {
+                    // NavigationLink zur Packliste, Übergabe der newJourney
                     NavigationLink {
-                        Text("Packliste-View")
+                        // Die PackingList benötigt das @Bindable Journey-Objekt
+                        PackingList(journey: newJourney)
                     } label: {
                         Label("Packliste", systemImage: "checklist")
                     }
@@ -59,17 +70,24 @@ struct NewJourneyView: View {
         }
     }
     
+    // 2. KORRIGIERT: Die Funktion greift jetzt direkt auf die @State Variable zu
     func saveJourney() {
-        let newJourney = Journey(
-            destination: destination,
-            stops: nil,
-            startDate: startDate,
-            vehicle: selectedVehicle.rawValue,
-            infos: nil,
-            start: start  // Standardwert
-        )
+        // Die Packliste wurde bereits in newJourney gespeichert.
+        // Wir fügen das Objekt einfach in den ModelContext ein.
         modelContext.insert(newJourney)
         
         dismiss()
     }
+}
+
+#Preview {
+    let container: ModelContainer
+        do {
+            container = try ModelContainer(for: Journey.self, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        } catch {
+            fatalError("Failed to create ModelContainer: \(error)")
+        }
+        
+        return NewJourneyView()
+            .modelContainer(container)
 }
