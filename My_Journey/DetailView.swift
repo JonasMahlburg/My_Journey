@@ -9,11 +9,9 @@ import MapKit
 import SwiftData
 import CoreLocation
 
-// Annahme: Journey ist in einer separaten @Model Datei definiert.
-// Falls nicht, muss die @Model Journey Definition hier oder in einer importierten Datei stehen.
+
 
 struct DetailView: View {
-    // 1. WICHTIG: @Bindable var, um die Daten ändern zu können (SwiftData/Bearbeitungsmodus)
     @Bindable var journey: Journey
     @Environment(\.modelContext) var modelContext
     
@@ -41,7 +39,6 @@ struct DetailView: View {
                                                 longitude: (minLon + maxLon) / 2.0)
             return .region(MKCoordinateRegion(center: center, span: span))
         } else {
-            // Fallback to a neutral region (e.g., Europe)
             return .region(MKCoordinateRegion(
                 center: CLLocationCoordinate2D(latitude: 51.0, longitude: 10.0),
                 span: MKCoordinateSpan(latitudeDelta: 15.0, longitudeDelta: 15.0)
@@ -106,7 +103,6 @@ struct DetailView: View {
             .frame(width: 300, height: 200)
             .task {
                 await geocodeIfNeeded()
-                // Update camera after geocoding
                 camera = cameraFittingRoute()
             }
             
@@ -115,9 +111,8 @@ struct DetailView: View {
                     ForEach(journey.infos ?? [], id: \.self) { info in
                         Text(info)
                     }
-                    .onDelete(perform: deleteInfo) // Ermöglicht Löschen im Edit-Modus
+                    .onDelete(perform: deleteInfo)
                 }
-                // HACK: Setze eine minimale/dynamische Höhe für die List in der ScrollView
                 .frame(minHeight: 50, idealHeight: CGFloat(journey.infos?.count ?? 0) * 44 + 50)
             }
         }
@@ -125,7 +120,6 @@ struct DetailView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 HStack {
-                    // Button zum Öffnen des Eingabe-Sheets
                     Button {
                         isShowingAddInfoSheet = true
                     } label: {
@@ -152,13 +146,12 @@ struct DetailView: View {
             PackingList(journey: journey)
         }
     }
-    
-    // MARK: - Datenbearbeitung & Geocoding
+
     
     func deleteInfo(offsets: IndexSet) {
         guard var currentInfos = journey.infos else { return }
         currentInfos.remove(atOffsets: offsets)
-        journey.infos = currentInfos // Speichere die geänderte Liste
+        journey.infos = currentInfos
     }
     
     private func geocodeIfNeeded() async {
