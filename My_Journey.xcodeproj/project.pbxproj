@@ -11,9 +11,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		DDE8FA872EDD73D200699329 /* My_Journy */ = {
+		DDE8FA872EDD73D200699329 /* My_Journey */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = My_Journy;
+			path = My_Journey;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		DDE8FA7C2EDD73D200699329 = {
 			isa = PBXGroup;
 			children = (
-				DDE8FA872EDD73D200699329 /* My_Journy */,
+				DDE8FA872EDD73D200699329 /* My_Journey */,
 				DDE8FA862EDD73D200699329 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,7 +61,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				DDE8FA872EDD73D200699329 /* My_Journy */,
+				DDE8FA872EDD73D200699329 /* My_Journey */,
 			);
 			name = My_Journy;
 			packageProductDependencies = (
