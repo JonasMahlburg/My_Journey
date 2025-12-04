@@ -1,6 +1,6 @@
-# 🗺️ My_Journy
+# 🗺️ My_Journey
 
-**My_Journy** ist eine einfache, aber effektive iOS-App, die entwickelt wurde, um die Planung und Verwaltung deiner Reisen zu vereinfachen. Erfasse alle wichtigen Details, von der Route über das Transportmittel bis hin zu Notizen und Packlisten, zentral an einem Ort.
+**My_Journey** ist eine einfache, aber effektive iOS-App, die entwickelt wurde, um die Planung und Verwaltung deiner Reisen zu vereinfachen. Erfasse alle wichtigen Details, von der Route über das Transportmittel bis hin zu Notizen und Packlisten, zentral an einem Ort.
     Dies ist mein Beitrag für den Minihackathon 3.0 zum Thema Unordnung
 
 ## ✨ Funktionen im Überblick
