@@ -48,7 +48,6 @@ struct ContentView: View {
                     DetailView(journey: journey)
                 }
         }
-        .background(Color(.leatherBrown))
     }
     func deleteItems(offsets: IndexSet) {
         for index in offsets {
