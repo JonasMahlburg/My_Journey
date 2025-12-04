@@ -23,13 +23,11 @@ struct NewJourneyView: View {
         NavigationStack {
             Form{
                 Section("Travel Plan"){
-                    // Bindung der Textfelder direkt an das newJourney Objekt
                     TextField("Start", text: $newJourney.start)
                     TextField("Destination", text: $newJourney.destination)
                     
                     DatePicker("Start of Journey", selection: $newJourney.startDate)
                     
-                    // Korrektes Binding für den Picker:
                     Picker("Vehicle", selection: Binding(
                         get: { newJourney.vehicleType ?? VehicleType.car },
                         set: { newJourney.vehicle = $0.rawValue }
@@ -50,17 +48,13 @@ struct NewJourneyView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Speichern") {
-                        // Der Zugriff auf newJourney ist hier nun direkt möglich
                         saveJourney()
                     }
-                    // Prüfe auf Start und Destination in der newJourney
                     .disabled(newJourney.start.isEmpty || newJourney.destination.isEmpty)
                 }
                 
                 ToolbarItem(placement: .bottomBar) {
-                    // NavigationLink zur Packliste, Übergabe der newJourney
                     NavigationLink {
-                        // Die PackingList benötigt das @Bindable Journey-Objekt
                         PackingList(journey: newJourney)
                     } label: {
                         Label("Packliste", systemImage: "checklist")
@@ -70,10 +64,7 @@ struct NewJourneyView: View {
         }
     }
     
-    // 2. KORRIGIERT: Die Funktion greift jetzt direkt auf die @State Variable zu
     func saveJourney() {
-        // Die Packliste wurde bereits in newJourney gespeichert.
-        // Wir fügen das Objekt einfach in den ModelContext ein.
         modelContext.insert(newJourney)
         
         dismiss()
