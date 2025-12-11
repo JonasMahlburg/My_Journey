@@ -11,6 +11,7 @@ struct PackingList: View {
     @Bindable var journey: Journey
     
     @State private var newItemText: String = ""
+    @State private var isPacked: Bool = false
     
     private var vehicleIcon: String {
         journey.vehicleType?.iconName ?? "questionmark.circle"
@@ -43,7 +44,9 @@ struct PackingList: View {
                 Section {
                     List {
                         ForEach(journey.packlist ?? [], id: \.self) { item in
-                            Text(item)
+                            Toggle(isOn: $isPacked) {
+                                Text(item)
+                            }
                         }
                         .onDelete(perform: deleteItems)
                     }
@@ -73,6 +76,7 @@ struct PackingList: View {
                 journey.packlist = []
             }
             journey.packlist?.append(trimmedItem)
+            isPacked = true
             
             newItemText = ""
         }
