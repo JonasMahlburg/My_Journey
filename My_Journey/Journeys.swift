@@ -49,9 +49,9 @@ class Journey {
     var startDate: Date
     var vehicle: String
     var infos: [String]?
-    var packlist: [String]?
+    var packlist: [PackItem]
     
-    init(destination: String, stops: [String]? = nil, startDate: Date, vehicle: String, infos: [String]? = nil, start: String, packlist: [String]? = nil) {
+    init(destination: String, stops: [String]? = nil, startDate: Date, vehicle: String, infos: [String]? = nil, start: String, packlist: [PackItem] = []) {
         self.destination = destination
         self.stops = stops
         self.startDate = startDate

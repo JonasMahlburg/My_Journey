@@ -43,9 +43,9 @@ struct PackingList: View {
                 
                 Section {
                     List {
-                        ForEach(journey.packlist ?? [], id: \.self) { item in
-                            Toggle(isOn: $isPacked) {
-                                Text(item)
+                        ForEach($journey.packlist, id: \.id) { $item in
+                            Toggle(isOn: $item.isPacked) {
+                                Text(item.name)
                             }
                         }
                         .onDelete(perform: deleteItems)
@@ -72,18 +72,13 @@ struct PackingList: View {
     func addItem() {
         let trimmedItem = newItemText.trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmedItem.isEmpty {
-            if journey.packlist == nil {
-                journey.packlist = []
-            }
-            journey.packlist?.append(trimmedItem)
-            isPacked = true
-            
+            journey.packlist.append(PackItem(name: trimmedItem, isPacked: false))
             newItemText = ""
         }
     }
-    
+
     func deleteItems(offsets: IndexSet) {
-        journey.packlist?.remove(atOffsets: offsets)
+        journey.packlist.remove(atOffsets: offsets)
     }
     
 }
