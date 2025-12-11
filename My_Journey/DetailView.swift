@@ -71,7 +71,7 @@ struct DetailView: View {
     }
     
     var body: some View {
-        ScrollView {
+        VStack(spacing: 0) {
             VStack(spacing: 8) {
                 Text("\(journey.start) to \(journey.destination)")
                     .font(.headline)
@@ -79,7 +79,6 @@ struct DetailView: View {
                     .symbolRenderingMode(.hierarchical)
                 Text(journey.startDate, style: .date)
             }
-            // Map-Ansicht
             Map(position: Binding(get: { camera ?? cameraFittingRoute() }, set: { newValue in camera = newValue })) {
                 if let s = startCoordinate {
                     Annotation("Start", coordinate: s) {
@@ -100,21 +99,26 @@ struct DetailView: View {
                         .stroke(.blue, lineWidth: 3)
                 }
             }
-            .frame(width: 300, height: 200)
+            .frame(height: 200)
             .task {
                 await geocodeIfNeeded()
                 camera = cameraFittingRoute()
             }
             
-            Section("Infos"){
+            Section{
                 List {
                     ForEach(journey.infos ?? [], id: \.self) { info in
                         Text(info)
                     }
                     .onDelete(perform: deleteInfo)
                 }
-                .frame(minHeight: 50, idealHeight: CGFloat(journey.infos?.count ?? 0) * 44 + 50)
+                .frame(height: 300)
+            } header: {
+                Text("Infos")
+                    .font(.title2)
+                    .fontWeight(.bold)
             }
+
         }
         .navigationTitle("Reise")
         .toolbar {

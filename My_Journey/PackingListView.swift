@@ -11,7 +11,6 @@ struct PackingList: View {
     @Bindable var journey: Journey
     
     @State private var newItemText: String = ""
-    @State private var isPacked: Bool = false
     
     private var vehicleIcon: String {
         journey.vehicleType?.iconName ?? "questionmark.circle"
@@ -42,13 +41,33 @@ struct PackingList: View {
                 }
                 
                 Section {
-                    List {
-                        ForEach(journey.packlist ?? [], id: \.self) { item in
-                            Toggle(isOn: $isPacked) {
-                                Text(item)
+                    if let packlist = journey.packlist, packlist.isEmpty {
+                        Spacer()
+                        Text("Ich packe meinen Koffer mit...")
+                        Spacer()
+                    }else{
+                        List {
+                            ForEach(Array((journey.packlist ?? []).enumerated()), id: \.element.id) { index, item in
+                                Toggle(isOn: Binding(
+                                    get: {
+                                        if let list = journey.packlist, list.indices.contains(index) {
+                                            return list[index].isPacked
+                                        }
+                                        return false
+                                    },
+                                    set: { newValue in
+                                        if journey.packlist == nil { journey.packlist = [] }
+                                        if let list = journey.packlist, list.indices.contains(index) {
+                                            list[index].isPacked = newValue
+                                            journey.packlist = list
+                                        }
+                                    }
+                                )) {
+                                    Text(item.name)
+                                }
                             }
+                            .onDelete(perform: deleteItems)
                         }
-                        .onDelete(perform: deleteItems)
                     }
                 } header: {
                     HStack {
@@ -72,17 +91,14 @@ struct PackingList: View {
     func addItem() {
         let trimmedItem = newItemText.trimmingCharacters(in: .whitespacesAndNewlines)
         if !trimmedItem.isEmpty {
-            if journey.packlist == nil {
-                journey.packlist = []
-            }
-            journey.packlist?.append(trimmedItem)
-            isPacked = true
-            
+            if journey.packlist == nil { journey.packlist = [] }
+            journey.packlist?.append(PackItem(name: trimmedItem, isPacked: false))
             newItemText = ""
         }
     }
-    
+
     func deleteItems(offsets: IndexSet) {
+        if journey.packlist == nil { return }
         journey.packlist?.remove(atOffsets: offsets)
     }
     
